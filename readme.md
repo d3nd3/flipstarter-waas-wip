@@ -1,5 +1,7 @@
 Work in progress. 
 
+Prefer pictures? Start with **[HUMANS.md](HUMANS.md)**.
+
 Currently have a VPS up and running @ http://109.228.52.142
 
 I have been focusing on making it load quicker / supporting NonJS users.

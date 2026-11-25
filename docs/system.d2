@@ -1,0 +1,54 @@
+# flipstarter-waas-wip — three wallet daemons feeding one JSON file
+# Strokes only (no fills) so the light and dark themes both stay readable.
+direction: right
+
+classes: {
+  entry: {style: {stroke: "#4f9cf9"; stroke-width: 2}}
+  core: {style: {stroke: "#9a7cf9"}}
+  state: {style: {stroke: "#e0a44a"}}
+  ext: {style: {stroke: "#6ac48a"; stroke-dash: 4}}
+  store: {style: {stroke: "#e0a44a"; stroke-width: 2}}
+}
+
+entry: Entry points {
+  direction: down
+  make: "make_wishlist.py · first run: create wallets, ask wishes, mint addresses" {class: entry}
+  start: "start_daemons.py · three daemons up, register every notify, then block" {class: entry}
+  edit: "edit_wishlist.py · add, remove or edit a wish while the page is live" {class: entry}
+  page: "browser · static index.html, app.js polls wishlist-data.json every 5 s" {class: entry}
+}
+
+core: Core {
+  direction: down
+  rpc: "monero-wallet-rpc launcher · stagenet, no login, --tx-notify runs the xmr handler" {class: core}
+  xmr: "notify_xmr_vps_pi.py · one process per txid: look up, dedupe, credit by address" {class: core}
+  http: "notify_bch_btc.py · HTTPServer the BTC and BCH daemons POST an address to" {class: core}
+  classify: "address classifier · first char q means bchtest, else bitcoin testnet" {class: core}
+  balance: "balance delta · confirmed + unconfirmed minus the stored sum is the gift" {class: core}
+  render_py: "static_html_loop.py · coingecko prices, gradient stops, splice into template" {class: core}
+  render_js: "app.js · runs the same USD math in the browser and redraws the gradient" {class: core}
+}
+
+state: State and config {
+  direction: down
+  grid-columns: 2
+  ini: "wishlist.ini · roots, ports, wallet paths, remote node" {class: store; shape: cylinder}
+  authored: "your_wishlist.json · goals, titles, three addresses" {class: store; shape: cylinder}
+  live: "wishlist-data.json · the only truth, one shared lock" {class: store; shape: cylinder}
+  db: "xmr_ids.db · sqlite txid set, all the dedupe" {class: store; shape: cylinder}
+  wallets: "wallets/ · hot wallet wiped, view-only left" {class: store; shape: cylinder}
+  qrs: "qrs/ADDR12.png · QR plus logo, skipped if present" {class: store; shape: cylinder}
+}
+
+external: External {
+  direction: down
+  node: "Monero node · xmr-lux.boldsuck.org:38081 stagenet" {class: ext}
+  xmr_rpc: "monero-wallet-rpc · localhost:15115 json_rpc" {class: ext}
+  btc: "Electrum 4.1.5 · BTC testnet daemon and balances" {class: ext}
+  bch: "Electron-Cash 4.2.6 · same contract on BCH testnet" {class: ext}
+  prices: "api.coingecko.com · hit by python and by every browser" {class: ext}
+}
+
+entry -> core
+core -> state
+core -> external
